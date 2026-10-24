@@ -1,4 +1,5 @@
 
+
 name: Build Zakkerni APK
 
 on:
@@ -25,6 +26,9 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses
+
       - name: Install Cordova
         run: npm install -g cordova
 
@@ -48,4 +52,3 @@ jobs:
         with:
           name: Zakkerni-APK
           path: zakkerni/platforms/android/app/build/outputs/apk/debug/app-debug.apk
-          
