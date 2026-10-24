@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#064e3b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ذَكِّرْنِي">
+  <title>تطبيق ذَكِّرْنِي | أذكار المسلم والتذكير بالصلاة على النبي ﷺ</title>
+  <style>
+    :root {
+      --bg-dark: #022c22;
+      --card-bg: #064e3b;
+      --card-border: #047857;
+      --emerald-light: #10b981;
+      --emerald-bright: #34d399;
+      --gold: #f59e0b;
+      --gold-light: #fef08a;
+      --text-white: #ffffff;
+      --text-muted: #a7f3d0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Naskh Arabic", "Traditional Arabic", Tahoma, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(180deg, #064e3b 0%, #022c22 100%);
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #059669, #022c22);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .logo-badge svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: var(--gold-light);
+      stroke-width: 2;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: var(--gold-light);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .nav-tabs {
+      display: flex;
+      background: #011d17;
+      padding: 0.4rem;
+      border-radius: 16px;
+      margin: 1rem auto;
+      max-width: 600px;
+      width: calc(100% - 2rem);
+      gap: 0.3rem;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .nav-tab {
+      flex: 1;
+      padding: 0.65rem 0.4rem;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .nav-tab.active {
+      background: var(--emerald-light);
+      color: #022c22;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+    .container {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1rem 3rem 1rem;
+      flex: 1;
+    }
+    /* Banner */
+    .banner {
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.9), rgba(2, 44, 34, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 20px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .banner-icon {
+      font-size: 2rem;
+    }
+    .banner-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+    .banner-desc {
+      font-size: 0.8rem;
+      color: #d1fae5;
+      margin-top: 0.2rem;
+    }
+    /* Adhkar Category Filter */
+    .category-filter {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.2rem;
+      scrollbar-width: none;
+    }
+    .category-filter::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      background: #064e3b;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .cat-btn.active {
+      background: var(--gold);
+      color: #022c22;
+      border-color: var(--gold-light);
+    }
+    /* Dhikr Card */
+    .dhikr-card {
+      background: linear-gradient(145deg, #064e3b, #04382a);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    .dhikr-card:active {
+      transform: scale(0.985);
+    }
+    .dhikr-card.completed {
+      border-color: var(--emerald-bright);
+      background: linear-gradient(145deg, #044937, #022f24);
+      opacity: 0.92;
+    }
+    .dhikr-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .dhikr-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+    .counter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      background: rgba(2, 44, 34, 0.8);
+      border: 1px solid var(--emerald-light);
+      color: var(--text-white);
+      transition: all 0.2s ease;
+    }
+    .counter-badge.done {
+      background: var(--emerald-light);
+      color: #022c22;
+      border-color: var(--emerald-bright);
+    }
+    .dhikr-text {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #f8fafc;
+      text-align: justify;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+    .dhikr-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(16, 185, 129, 0.15);
+      padding-top: 0.6rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .reset-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+    }
+    .reset-btn:hover {
+      color: var(--text-white);
+      background: rgba(255,255,255,0.1);
+    }
+    /* Salawat Section */
+    .salawat-box {
+      background: linear-gradient(145deg, #064e3b, #033629);
+      border: 1px solid var(--gold);
+      border-radius: 24px;
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      margin-bottom: 1.5rem;
+    }
+    .salawat-counter-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #059669 0%, #022c22 100%);
+      border: 3px solid var(--gold);
+      margin: 1.25rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
+      transition: transform 0.1s ease;
+      user-select: none;
+    }
+    .salawat-counter-circle:active {
+      transform: scale(0.94);
+    }
+    .salawat-count {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+    .salawat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .tasbih-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .tasbih-btn {
+      background: #022c22;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 14px;
+      padding: 0.85rem;
+      color: var(--text-white);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s ease;
+    }
+    .tasbih-btn:active {
+      background: #059669;
+    }
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(16, 185, 129, 0.2);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z"/></svg>
+      </div>
+      <div>
+        <h1>تطبيق ذَكِّرْنِي</h1>
+        <div class="subtitle">رفيقك اليومي لأذكار المسلم والتذكير بالصلاة على النبي ﷺ (يعمل بدون إنترنت)</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchMainTab('adhkar')">أذكار المسلم</button>
+    <button class="nav-tab" onclick="switchMainTab('salawat')">الصلاة على النبي ﷺ</button>
+    <button class="nav-tab" onclick="switchMainTab('prayer')">مواقيت الصلاة</button>
+  </div>
+
+  <div class="container">
+    <!-- Advance Reminder Banner for Tomorrow Fasting / Friday -->
+    <div id="advanceReminderBanner" class="banner" style="display: none;">
+      <div class="banner-icon">🌙</div>
+      <div>
+        <div id="bannerTitle" class="banner-title">تذكير مسبق بصيام الغد</div>
+        <div id="bannerDesc" class="banner-desc">غداً من السنة صيامه، تقبل الله منا ومنكم صالح الأعمال.</div>
+      </div>
+    </div>
+
+    <!-- MAIN TAB 1: ADHKAR AL-MUSLIM -->
+    <div id="adhkarSection">
+      <div class="category-filter">
+        <button class="cat-btn active" onclick="filterCategory('morning')">🌅 أذكار الصباح</button>
+        <button class="cat-btn" onclick="filterCategory('evening')">🌆 أذكار المساء</button>
+        <button class="cat-btn" onclick="filterCategory('wake')">☀️ أذكار الاستيقاظ</button>
+        <button class="cat-btn" onclick="filterCategory('sleep')">🌙 أذكار النوم</button>
+      </div>
+
+      <div id="adhkarList"></div>
+    </div>
+
+    <!-- MAIN TAB 2: SALAWAT -->
+    <div id="salawatSection" style="display: none;">
+      <div class="salawat-box">
+        <h2 style="color: var(--gold-light); font-size: 1.2rem; margin-bottom: 0.5rem;">الصلاة على النبي ﷺ</h2>
+        <p style="font-size: 0.9rem; color: #d1fae5; line-height: 1.8;">
+          «مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا»
+        </p>
+        <div class="salawat-counter-circle" onclick="incrementSalawat()">
+          <span id="salawatCountDisplay" class="salawat-count">0</span>
+          <span class="salawat-label">اضغط هنا للصلاة</span>
+        </div>
+        <button class="reset-btn" onclick="resetSalawat()">إعادة ضبط العداد</button>
+      </div>
+    </div>
+
+    <!-- MAIN TAB 3: PRAYER TIMES -->
+    <div id="prayerSection" style="display: none;">
+      <div class="salawat-box">
+        <h2 style="color: var(--gold-light); font-size: 1.25rem; margin-bottom: 0.25rem;">مواقيت الصلاة الدقيقة</h2>
+        <p style="font-size: 0.8rem; color: #a7f3d0; margin-bottom: 1rem;">حسب موقعك الجغرافي أو مدينتك المختارة</p>
+        
+        <div style="margin-bottom: 1rem;">
+          <select id="citySelect" onchange="changeCity(this.value)" style="width: 100%; max-width: 320px; padding: 0.6rem 0.8rem; background: #022c22; color: #ffffff; border: 1px solid var(--card-border); border-radius: 12px; font-size: 0.9rem; font-family: inherit; cursor: pointer;">
+            <option value="makkah">مكة المكرمة (السعودية)</option>
+            <option value="madinah">المدينة المنورة (السعودية)</option>
+            <option value="riyadh">الرياض (السعودية)</option>
+            <option value="cairo">القاهرة (مصر)</option>
+            <option value="jerusalem">القدس الشريف (فلسطين)</option>
+            <option value="amman">عمّان (الأردن)</option>
+            <option value="damascus">دمشق (سوريا)</option>
+            <option value="baghdad">بغداد (العراق)</option>
+            <option value="kuwait">الكويت</option>
+            <option value="doha">الدوحة (قطر)</option>
+            <option value="dubai">دبي (الإمارات)</option>
+            <option value="rabat">الرباط (المغرب)</option>
+            <option value="tunis">تونس</option>
+            <option value="algiers">الجزائر</option>
+            <option value="istanbul">إسطنبول (تركيا)</option>
+          </select>
+        </div>
+
+        <div id="prayerListContainer" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; text-align: right; margin-top: 1rem;">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div style="margin-top: 1.25rem; padding: 0.75rem; background: #022c22; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); font-size: 0.75rem; color: #a7f3d0;">
+          قال النبي ﷺ: «أحب الأعمال إلى الله الصلاة على وقتها»
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    تطبيق ذَكِّرْنِي | صدقة جارية، اجعله رفيقك دائماً. يعمل بدون نت بنسبة 100%.
+  </footer>
+
+  <script>
+    const adhkarData = [{"id":"m_kursi","category":"morning","title":"آية الكرسي","arabicText":"اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ","targetCount":1,"source":"أخرجه الحاكم وصححه الألباني"},{"id":"m_ikhlas","category":"morning","title":"سورة الإخلاص","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"m_falaq","category":"morning","title":"سورة الفلق","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"m_nas","category":"morning","title":"سورة الناس","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"m_sayyid","category":"morning","title":"سيد الاستغفار","arabicText":"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عهدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ","targetCount":1,"source":"صحيح البخاري (6306)"},{"id":"m_asbahna","category":"morning","title":"أصبحنا وأصبح الملك لله","arabicText":"أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ","targetCount":1,"source":"صحيح مسلم (2723)"},{"id":"m_bismillah","category":"morning","title":"بسم الله الذي لا يضر مع اسمه شيء","arabicText":"بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ، وَهُوَ السَّمِيعُ الْعَلِيمُ","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"m_radeeto","category":"morning","title":"رضيت بالله رباً","arabicText":"رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا","targetCount":3,"source":"مسند أحمد وسنن أبي داود"},{"id":"m_hayy","category":"morning","title":"يا حي يا قيوم برحمتك أستغيث","arabicText":"يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ","targetCount":1,"source":"أخرجه الحاكم وصححه الألباني"},{"id":"m_hasbi","category":"morning","title":"حسبي الله لا إله إلا هو","arabicText":"حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ","targetCount":7,"source":"سنن أبي داود (5081)"},{"id":"m_afini","category":"morning","title":"اللهم عافني في بدني وسمعي وبصري","arabicText":"اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ، اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لَا إِلَهَ إِلَّا أَنْتَ","targetCount":3,"source":"سنن أبي داود (5090) وحسنه الألباني"},{"id":"m_subhan_bihamdih","category":"morning","title":"سبحان الله وبحمده","arabicText":"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ","targetCount":100,"source":"صحيح مسلم (2692)"},{"id":"m_tahlil","category":"morning","title":"لا إله إلا الله وحده لا شريك له","arabicText":"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ","targetCount":10,"source":"صحيح البخاري ومسلم"},{"id":"m_salawat","category":"morning","title":"الصلاة على النبي ﷺ","arabicText":"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ","targetCount":10,"source":"أخرجه الطبراني وحسنه الألباني"},{"id":"e_kursi","category":"evening","title":"آية الكرسي","arabicText":"اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ","targetCount":1,"source":"أخرجه الحاكم وصححه الألباني"},{"id":"e_ikhlas","category":"evening","title":"سورة الإخلاص","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"e_falaq","category":"evening","title":"سورة الفلق","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"e_nas","category":"evening","title":"سورة الناس","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ ﴾","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"},{"id":"e_amsayna","category":"evening","title":"أمسينا وأمسى الملك لله","arabicText":"أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ","targetCount":1,"source":"صحيح مسلم (2723)"},{"id":"e_sayyid","category":"evening","title":"سيد الاستغفار","arabicText":"اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ","targetCount":1,"source":"صحيح البخاري (6306)"},{"id":"e_aoodho","category":"evening","title":"أعوذ بكلمات الله التامات من شر ما خلق","arabicText":"أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ","targetCount":3,"source":"صحيح مسلم (2709)"},{"id":"e_bismillah","category":"evening","title":"بسم الله الذي لا يضر مع اسمه شيء","arabicText":"بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ، وَهُوَ السَّمِيعُ الْعَلِيمُ","targetCount":3,"source":"سنن أبي داود والترمذي"},{"id":"e_radeeto","category":"evening","title":"رضيت بالله رباً","arabicText":"رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا","targetCount":3,"source":"مسند أحمد وسنن أبي داود"},{"id":"e_hayy","category":"evening","title":"يا حي يا قيوم برحمتك أستغيث","arabicText":"يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ","targetCount":1,"source":"أخرجه الحاكم وصححه الألباني"},{"id":"e_hasbi","category":"evening","title":"حسبي الله لا إله إلا هو","arabicText":"حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ","targetCount":7,"source":"سنن أبي داود (5081)"},{"id":"e_subhan_bihamdih","category":"evening","title":"سبحان الله وبحمده","arabicText":"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ","targetCount":100,"source":"صحيح مسلم (2692)"},{"id":"e_salawat","category":"evening","title":"الصلاة على النبي ﷺ","arabicText":"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ","targetCount":10,"source":"صحيح الترغيب والترهيب"},{"id":"w_ahyana","category":"wake","title":"الحمد لله الذي أحيانا","arabicText":"الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ","targetCount":1,"source":"صحيح البخاري (6312)"},{"id":"w_afani","category":"wake","title":"عافاني في جسدي ورد علي روحي","arabicText":"الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي فِي جَسَدِي، وَرَدَّ عَلَيَّ رُوحِي، وَأَذِنَ لِي بِذِكْرِهِ","targetCount":1,"source":"سنن الترمذي (3401) وحسنه الألباني"},{"id":"w_taarra","category":"wake","title":"ذكر من تعارّ من الليل","arabicText":"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ، اللَّهُمَّ اغْفِرْ لِي","targetCount":1,"source":"صحيح البخاري (1154)"},{"id":"s_kursi","category":"sleep","title":"آية الكرسي قبل النوم","arabicText":"اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ","targetCount":1,"source":"صحيح البخاري (2311)"},{"id":"s_ikhlas","category":"sleep","title":"سورة الإخلاص","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴾","targetCount":3,"source":"صحيح البخاري (5017)"},{"id":"s_falaq","category":"sleep","title":"سورة الفلق","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴾","targetCount":3,"source":"صحيح البخاري (5017)"},{"id":"s_nas","category":"sleep","title":"سورة الناس","arabicText":"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ ﴾","targetCount":3,"source":"صحيح البخاري (5017)"},{"id":"s_janbi","category":"sleep","title":"باسمك ربي وضعت جنبي","arabicText":"بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ","targetCount":1,"source":"صحيح البخاري ومسلم"},{"id":"s_aslamtu","category":"sleep","title":"اللهم أسلمت نفسي إليك","arabicText":"اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَوَجَّهْتُ وَجْهِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ، رَغْبَةً وَرَهْبَةً إِلَيْكَ، لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ، آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ، وَبِنَبِيِّكَ الَّذِي أَرْسَلْتَ","targetCount":1,"source":"صحيح البخاري (247)"},{"id":"s_tasbih","category":"sleep","title":"التسبيح قبل النوم","arabicText":"سُبْحَانَ اللَّهِ","targetCount":33,"source":"صحيح البخاري ومسلم"},{"id":"s_tahmid","category":"sleep","title":"التحميد قبل النوم","arabicText":"الْحَمْدُ لِلَّهِ","targetCount":33,"source":"صحيح البخاري ومسلم"},{"id":"s_takbir","category":"sleep","title":"التكبير قبل النوم","arabicText":"اللَّهُ أَكْبَرُ","targetCount":34,"source":"صحيح البخاري ومسلم"},{"id":"s_baqarah","category":"sleep","title":"خواتيم سورة البقرة","arabicText":"﴿ آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ ۝ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنتَ مَوْلَانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ ﴾","targetCount":1,"source":"صحيح البخاري (5009) ومسلم (808)"},{"id":"s_adhabaka","category":"sleep","title":"اللهم قني عذابك يوم تبعث عبادك","arabicText":"اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ","targetCount":3,"source":"سنن أبي داود والترمذي وصححه الألباني"}];
+    let currentCategory = 'morning';
+    let counts = {};
+    let salawatCount = 0;
+    let tasbihCount = 0;
+    let currentTasbihPhrase = 'سُبْحَانَ اللَّهِ';
+
+    // Audio chime generator using Web Audio API (completely offline)
+    function playBeep(freq = 600, duration = 0.08) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // audio context not allowed before interaction
+      }
+    }
+
+    function vibrateDevice(ms = 40) {
+      if ('vibrate' in navigator) {
+        try { navigator.vibrate(ms); } catch(e){}
+      }
+    }
+
+    // Load state from localStorage
+    function loadSavedState() {
+      try {
+        const savedCounts = localStorage.getItem('zakirni_offline_counts');
+        if (savedCounts) counts = JSON.parse(savedCounts);
+        salawatCount = parseInt(localStorage.getItem('zakirni_salawat_count') || '0', 10);
+        tasbihCount = parseInt(localStorage.getItem('zakirni_tasbih_count') || '0', 10);
+        document.getElementById('salawatCountDisplay').innerText = salawatCount;
+      } catch (e) {}
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('zakirni_offline_counts', JSON.stringify(counts));
+        localStorage.setItem('zakirni_salawat_count', salawatCount);
+      } catch (e) {}
+    }
+
+    function switchMainTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('adhkarSection').style.display = tab === 'adhkar' ? 'block' : 'none';
+      document.getElementById('salawatSection').style.display = tab === 'salawat' ? 'block' : 'none';
+      document.getElementById('prayerSection').style.display = tab === 'prayer' ? 'block' : 'none';
+
+      if (tab === 'prayer') {
+        renderPrayerTimes();
+      }
+    }
+
+    // Offline Prayer Times Cities Database
+    const citiesPrayerData = {
+      makkah: { name: 'مكة المكرمة', times: { fajr: '05:08', sunrise: '06:26', dhuhr: '12:28', asr: '15:50', maghrib: '18:29', isha: '19:59' } },
+      madinah: { name: 'المدينة المنورة', times: { fajr: '05:09', sunrise: '06:29', dhuhr: '12:29', asr: '15:49', maghrib: '18:28', isha: '19:58' } },
+      riyadh: { name: 'الرياض', times: { fajr: '04:54', sunrise: '06:13', dhuhr: '12:06', asr: '15:29', maghrib: '17:58', isha: '19:28' } },
+      cairo: { name: 'القاهرة', times: { fajr: '04:52', sunrise: '06:20', dhuhr: '12:09', asr: '15:23', maghrib: '17:57', isha: '19:16' } },
+      jerusalem: { name: 'القدس الشريف', times: { fajr: '04:46', sunrise: '06:11', dhuhr: '11:58', asr: '15:15', maghrib: '17:45', isha: '19:04' } },
+      amman: { name: 'عمّان', times: { fajr: '04:44', sunrise: '06:09', dhuhr: '11:56', asr: '15:13', maghrib: '17:43', isha: '19:02' } },
+      damascus: { name: 'دمشق', times: { fajr: '04:42', sunrise: '06:10', dhuhr: '11:55', asr: '15:10', maghrib: '17:40', isha: '19:01' } },
+      baghdad: { name: 'بغداد', times: { fajr: '05:01', sunrise: '06:27', dhuhr: '12:12', asr: '15:26', maghrib: '17:57', isha: '19:18' } },
+      kuwait: { name: 'الكويت', times: { fajr: '04:49', sunrise: '06:11', dhuhr: '11:58', asr: '15:16', maghrib: '17:46', isha: '19:05' } },
+      doha: { name: 'الدوحة', times: { fajr: '04:36', sunrise: '05:55', dhuhr: '11:47', asr: '15:08', maghrib: '17:39', isha: '18:57' } },
+      dubai: { name: 'دبي', times: { fajr: '05:07', sunrise: '06:27', dhuhr: '12:27', asr: '15:48', maghrib: '18:27', isha: '19:44' } },
+      rabat: { name: 'الرباط', times: { fajr: '05:27', sunrise: '06:55', dhuhr: '12:44', asr: '15:58', maghrib: '18:33', isha: '19:53' } },
+      tunis: { name: 'تونس', times: { fajr: '05:14', sunrise: '06:45', dhuhr: '12:31', asr: '15:42', maghrib: '18:16', isha: '19:40' } },
+      algiers: { name: 'الجزائر', times: { fajr: '05:32', sunrise: '07:02', dhuhr: '12:49', asr: '16:01', maghrib: '18:35', isha: '19:59' } },
+      istanbul: { name: 'إسطنبول', times: { fajr: '05:46', sunrise: '07:18', dhuhr: '13:02', asr: '16:11', maghrib: '18:46', isha: '20:12' } },
+    };
+
+    let selectedCityKey = 'makkah';
+
+    window.changeCity = function(cityKey) {
+      selectedCityKey = cityKey;
+      renderPrayerTimes();
+    };
+
+    function renderPrayerTimes() {
+      const container = document.getElementById('prayerListContainer');
+      const data = citiesPrayerData[selectedCityKey] || citiesPrayerData.makkah;
+      const prayers = [
+        { name: 'الفجر', time: data.times.fajr, icon: '🌅' },
+        { name: 'الشروق', time: data.times.sunrise, icon: '☀️' },
+        { name: 'الظهر', time: data.times.dhuhr, icon: '☀️' },
+        { name: 'العصر', time: data.times.asr, icon: '🌤️' },
+        { name: 'المغرب', time: data.times.maghrib, icon: '🌇' },
+        { name: 'العشاء', time: data.times.isha, icon: '🌙' },
+      ];
+
+      container.innerHTML = prayers.map(p => `
+        <div style="background: #022c22; padding: 0.8rem 1rem; border-radius: 14px; border: 1px solid rgba(16, 185, 129, 0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <span style="font-size: 0.85rem; color: #a7f3d0; font-weight: bold;">${p.icon} ${p.name}</span>
+          </div>
+          <div style="font-size: 1.3rem; font-weight: 900; color: #fef08a; font-family: monospace;">${p.time}</div>
+        </div>
+      `).join('');
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderAdhkar();
+    }
+
+    function renderAdhkar() {
+      const container = document.getElementById('adhkarList');
+      const filtered = adhkarData.filter(d => d.category === currentCategory);
+      
+      container.innerHTML = filtered.map(item => {
+        const remaining = counts[item.id] !== undefined ? counts[item.id] : item.targetCount;
+        const isDone = remaining <= 0;
+        
+        return `
+          <div class="dhikr-card ${isDone ? 'completed' : ''}" onclick="decrementDhikr('${item.id}', ${item.targetCount}, event)">
+            <div class="dhikr-header">
+              <span class="dhikr-title">${item.title}</span>
+              <span class="counter-badge ${isDone ? 'done' : ''}" id="badge-${item.id}">
+                ${isDone ? '✓ تم' : remaining + ' / ' + item.targetCount}
+              </span>
+            </div>
+            <div class="dhikr-text">${item.arabicText}</div>
+            <div class="dhikr-footer">
+              <span>${item.source || ''}</span>
+              <button class="reset-btn" onclick="resetDhikr('${item.id}', ${item.targetCount}, event)">إعادة العداد</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.decrementDhikr = function(id, target, e) {
+      if (e.target.closest('.reset-btn')) return;
+      const current = counts[id] !== undefined ? counts[id] : target;
+      if (current > 0) {
+        counts[id] = current - 1;
+        vibrateDevice(35);
+        if (counts[id] === 0) {
+          playBeep(880, 0.15); // Celebration chime
+        } else {
+          playBeep(520, 0.05);
+        }
+        saveState();
+        renderAdhkar();
+      }
+    };
+
+    window.resetDhikr = function(id, target, e) {
+      if (e) e.stopPropagation();
+      counts[id] = target;
+      saveState();
+      renderAdhkar();
+    };
+
+    window.incrementSalawat = function() {
+      salawatCount++;
+      document.getElementById('salawatCountDisplay').innerText = salawatCount;
+      vibrateDevice(40);
+      playBeep(640, 0.06);
+      saveState();
+    };
+
+    window.resetSalawat = function() {
+      salawatCount = 0;
+      document.getElementById('salawatCountDisplay').innerText = '0';
+      saveState();
+    };
+
+    // Check Tomorrow Fasting & Friday Reminder
+    function checkAdvanceReminders() {
+      const now = new Date();
+      const currentDay = now.getDay(); // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+      const banner = document.getElementById('advanceReminderBanner');
+      const title = document.getElementById('bannerTitle');
+      const desc = document.getElementById('bannerDesc');
+
+      // If Sunday (0) -> Tomorrow is Monday (صيام الإثنين)
+      if (currentDay === 0) {
+        banner.style.display = 'flex';
+        title.innerText = '🌙 تذكير مسبق: صيام غدٍ الإثنين';
+        desc.innerText = '«تُعْرَضُ الأَعْمَالُ يَوْمَ الاِثْنَيْنِ وَالْخَمِيسِ فَأُحِبُّ أَنْ يُعْرَضَ عَمَلِي وَأَنَا صَائِمٌ»';
+      } else if (currentDay === 3) {
+        // Wednesday (3) -> Tomorrow is Thursday (صيام الخميس)
+        banner.style.display = 'flex';
+        title.innerText = '🌙 تذكير مسبق: صيام غدٍ الخميس';
+        desc.innerText = 'سنة نبوية مباركة، نوّر يومك بصيام النافلة واغتنام الأجر.';
+      } else if (currentDay === 4) {
+        // Thursday (4) -> Tomorrow is Friday (سنن الجمعة وسورة الكهف والصلاة على النبي)
+        banner.style.display = 'flex';
+        title.innerText = '📖 تذكير مسبق: سنن يوم الجمعة المباركة';
+        desc.innerText = 'استعد لغدٍ الجمعة: قراءة سورة الكهف، والإكثار من الصلاة على النبي ﷺ، وساعة الإجابة.';
+      }
+    }
+
+    loadSavedState();
+    renderAdhkar();
+    checkAdvanceReminders();
+  </script>
+</body>
+</html>
