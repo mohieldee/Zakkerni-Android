@@ -1,0 +1,51 @@
+
+name: Build Zakkerni APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build.yml"
+      - "تطبيق-ذَكِّرْني-أذكار-المسلم-كامل (2).html"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create Android project
+        run: |
+          cordova create zakkerni com.mohieldee.zakkerni "ذكّرني"
+          cd zakkerni
+          cordova platform add android
+
+      - name: Copy HTML app
+        run: |
+          cp "تطبيق-ذَكِّرْني-أذكار-المسلم-كامل (2).html" zakkerni/www/index.html
+
+      - name: Build APK
+        run: |
+          cd zakkerni
+          cordova build android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Zakkerni-APK
+          path: zakkerni/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+          
